@@ -1,9 +1,7 @@
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    parent: 'game-container',
-    physics: { default: 'arcade' },
+    width: window.innerWidth,  // Fit to screen width
+    height: window.innerHeight, // Fit to screen height
     scene: {
         preload: preload,
         create: create,
@@ -11,54 +9,55 @@ const config = {
     }
 };
 
-let player, hearts, cursors, score = 0;
-let scoreText;
+let game = new Phaser.Game(config);
+let player, heartsCollected = 0, restartButton;
 
-const game = new Phaser.Game(config);
+const PLAYER_SIZE = 50;  // Adjustable player size
+const HEART_SIZE = 30;   // Adjustable heart size
 
 function preload() {
-    this.load.image('background', 'assets/bg.png'); // Add a romantic background image
-    this.load.image('heart', 'assets/heart.png');   // Heart collectible
-    this.load.image('player', 'assets/player.png'); // Main character
+    this.load.image('bg', 'assets/bg.jpg');
+    this.load.image('player', 'assets/player.png');
+    this.load.image('heart', 'assets/heart.png');
 }
 
 function create() {
-    this.add.image(400, 300, 'background');  
+    // Add background and scale it to fit the game window
+    let bg = this.add.image(0, 0, 'bg').setOrigin(0, 0);
+    bg.displayWidth = this.sys.game.config.width;
+    bg.displayHeight = this.sys.game.config.height;
 
-    player = this.physics.add.sprite(400, 500, 'player').setScale(0.5);
-    cursors = this.input.keyboard.createCursorKeys();
+    // Create player and set adjustable size
+    player = this.add.image(100, 100, 'player');
+    player.setDisplaySize(PLAYER_SIZE, PLAYER_SIZE);
 
-    hearts = this.physics.add.group({
-        key: 'heart',
-        repeat: 5,
-        setXY: { x: 100, y: 100, stepX: 150 }
-    });
+    // Create heart and set adjustable size
+    let heart = this.add.image(300, 300, 'heart');
+    heart.setDisplaySize(HEART_SIZE, HEART_SIZE);
+    
+    this.heartsText = this.add.text(20, 20, 'Hearts: 0', { fontSize: '24px', fill: '#fff' });
 
-    hearts.children.iterate(heart => {
-        heart.setScale(0.3);
-    });
-
-    this.physics.add.overlap(player, hearts, collectHeart, null, this);
-
-    scoreText = this.add.text(10, 10, 'Hearts: 0', { fontSize: '24px', fill: '#fff' });
+    // Reset everything when game restarts
+    restartButton = this.add.text(this.sys.game.config.width / 2 - 50, this.sys.game.config.height / 2 + 50, 'Restart', { fontSize: '24px', fill: '#fff', backgroundColor: '#ff0000' })
+        .setPadding(10)
+        .setInteractive()
+        .setVisible(false)
+        .on('pointerdown', () => restartGame());
 }
 
 function update() {
-    if (cursors.left.isDown) player.setVelocityX(-200);
-    else if (cursors.right.isDown) player.setVelocityX(200);
-    else player.setVelocityX(0);
-
-    if (cursors.up.isDown) player.setVelocityY(-200);
-    else if (cursors.down.isDown) player.setVelocityY(200);
-    else player.setVelocityY(0);
+    if (heartsCollected >= 6) {
+        showFinalMessage(this);
+    }
 }
 
-function collectHeart(player, heart) {
-    heart.disableBody(true, true);
-    score++;
-    scoreText.setText('Hearts: ' + score);
+function showFinalMessage(scene) {
+    scene.add.text(scene.sys.game.config.width / 2 - 100, scene.sys.game.config.height / 2, 'Happy Birthday, My Love!', { fontSize: '32px', fill: '#fff' });
+    restartButton.setVisible(true);
+}
 
-    if (score === 6) {
-        this.add.text(300, 250, 'Happy Birthday, My Love! ❤️', { fontSize: '32px', fill: '#fff' });
-    }
+function restartGame() {
+    heartsCollected = 0;
+    restartButton.setVisible(false);
+    game.scene.scenes[0].scene.restart();
 }
