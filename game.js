@@ -1,7 +1,9 @@
 const config = {
     type: Phaser.AUTO,
-    width: window.innerWidth,  // Fit to screen width
-    height: window.innerHeight, // Fit to screen height
+    scale: {
+        mode: Phaser.Scale.RESIZE, // Ensures game resizes to fit screen
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     scene: {
         preload: preload,
         create: create,
@@ -10,7 +12,7 @@ const config = {
 };
 
 let game = new Phaser.Game(config);
-let player, heartsCollected = 0, restartButton;
+let player, heartsCollected = 0, heartsText, restartButton, heartGroup;
 
 const PLAYER_SIZE = 50;  // Adjustable player size
 const HEART_SIZE = 30;   // Adjustable heart size
@@ -22,8 +24,14 @@ function preload() {
 }
 
 function create() {
-    // Add background and scale it to fit the game window
+    // Set background to dynamically scale with game window
     let bg = this.add.image(0, 0, 'bg').setOrigin(0, 0);
+    this.scale.on('resize', (gameSize) => {
+        this.cameras.main.setSize(gameSize.width, gameSize.height);
+        bg.displayWidth = gameSize.width;
+        bg.displayHeight = gameSize.height;
+    });
+
     bg.displayWidth = this.sys.game.config.width;
     bg.displayHeight = this.sys.game.config.height;
 
@@ -31,13 +39,16 @@ function create() {
     player = this.add.image(100, 100, 'player');
     player.setDisplaySize(PLAYER_SIZE, PLAYER_SIZE);
 
-    // Create heart and set adjustable size
-    let heart = this.add.image(300, 300, 'heart');
-    heart.setDisplaySize(HEART_SIZE, HEART_SIZE);
-    
-    this.heartsText = this.add.text(20, 20, 'Hearts: 0', { fontSize: '24px', fill: '#fff' });
+    // Create heart group
+    heartGroup = this.physics.add.group();
+    for (let i = 0; i < 6; i++) {
+        let heart = heartGroup.create(Phaser.Math.Between(50, this.sys.game.config.width - 50), Phaser.Math.Between(50, this.sys.game.config.height - 50), 'heart');
+        heart.setDisplaySize(HEART_SIZE, HEART_SIZE);
+    }
 
-    // Reset everything when game restarts
+    heartsText = this.add.text(20, 20, 'Hearts: 0', { fontSize: '24px', fill: '#fff' });
+
+    // Restart button (hidden initially)
     restartButton = this.add.text(this.sys.game.config.width / 2 - 50, this.sys.game.config.height / 2 + 50, 'Restart', { fontSize: '24px', fill: '#fff', backgroundColor: '#ff0000' })
         .setPadding(10)
         .setInteractive()
