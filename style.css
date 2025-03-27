@@ -1,13 +1,14 @@
-body {
-    background-color: #ffccdc;
-    text-align: center;
-    font-family: 'Arial', sans-serif;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 #game-container {
-    width: 800px;
-    height: 600px;
-    margin: auto;
-    border: 5px solid white;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100vh;
+    display: block;
+    position: relative;
 }
