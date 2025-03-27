@@ -1,4 +1,4 @@
-body {
+/* body {
     font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
@@ -6,6 +6,23 @@ body {
     justify-content: center;
     height: 100vh;
     background: linear-gradient(135deg, #f5a9b8, #b19cd9);
+    margin: 0;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+} */
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('assets/opening-screen.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     margin: 0;
     overflow: hidden;
     color: white;
