@@ -23,14 +23,25 @@ const config = {
 let game = new Phaser.Game(config);
 let player, heartsCollected = 0, heartsText, restartButton, heartGroup;
 let cursors;
+let collectSound, completionSound;
+let soundsLoaded = false;
 
 const PLAYER_SIZE = 100;  // Adjustable player size
 const HEART_SIZE = 80;   // Adjustable heart size
 
 function preload() {
-    this.load.image('bg', 'assets/bg.jpg'); 
+    // Essential assets
+    this.load.image('bg', 'assets/bg.jpg');
     this.load.image('player', 'assets/player.png');
     this.load.image('heart', 'assets/heart.png');
+    
+    // Try to load sound files, but don't fail if they're missing
+    try {
+        this.load.audio('collect', 'assets/collect.mp3');
+        this.load.audio('completion', 'assets/completion.mp3');
+    } catch (e) {
+        console.warn("Sound files could not be loaded. Game will continue without sound.");
+    }
 }
 
 function create() {
@@ -44,6 +55,16 @@ function create() {
         bg.displayWidth = gameSize.width;
         bg.displayHeight = gameSize.height;
     });
+
+    // Try to create sound effects
+    try {
+        collectSound = this.sound.add('collect');
+        completionSound = this.sound.add('completion');
+        soundsLoaded = true;
+    } catch (e) {
+        console.warn("Sound effects could not be created. Game will continue without sound.");
+        soundsLoaded = false;
+    }
 
     // Create player with physics
     player = this.physics.add.sprite(100, 100, 'player');
@@ -85,8 +106,8 @@ function create() {
 }
 
 function update() {
-    // Player movement
-    const speed = 400;
+    // Player movement with increased speed
+    const speed = 400; // Increased from 200 to 300 for faster movement
     
     if (cursors.left.isDown) {
         player.setVelocityX(-speed);
@@ -109,6 +130,15 @@ function collectHeart(player, heart) {
     heart.disableBody(true, true);
     heartsCollected++;
     heartsText.setText('Hearts: ' + heartsCollected);
+    
+    // Play collection sound if available
+    if (soundsLoaded && collectSound) {
+        try {
+            collectSound.play();
+        } catch (e) {
+            console.warn("Could not play collect sound");
+        }
+    }
 
     if (heartsCollected >= 14) {
         showFinalMessage(this);
@@ -116,6 +146,15 @@ function collectHeart(player, heart) {
 }
 
 function showFinalMessage(scene) {
+    // Play completion sound if available
+    if (soundsLoaded && completionSound) {
+        try {
+            completionSound.play();
+        } catch (e) {
+            console.warn("Could not play completion sound");
+        }
+    }
+    
     // Darken background
     const overlay = scene.add.rectangle(
         0, 0, 
