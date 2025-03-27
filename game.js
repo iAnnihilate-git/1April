@@ -40,7 +40,7 @@ function preload() {
     this.load.image('heart', 'assets/heart.png');
     
     // Load only the collect sound since that's all you have
-    this.load.audio('collect', 'assets/collect.mp3');
+    this.load.audio('collect', 'assets/collect-2.mp3');
     // Don't try to load the completion sound
     this.load.audio('completion', 'assets/completion-tada-funny.mp3');
 }
@@ -183,7 +183,11 @@ function showFinalMessage(scene) {
         scene.cameras.main.width / 2, 
         scene.cameras.main.height / 2 - 50, 
         'Happy Birthday, Pilluuu ❤️!', 
-        { fontSize: '62px', fill: '#fff' }
+        { 
+            fontFamily: 'Acme',
+            fontSize: '62px', 
+            fill: '#fff' 
+        }
     ).setOrigin(0.5);
 
     // Add some animation to the message
