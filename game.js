@@ -200,5 +200,6 @@ function showFinalMessage(scene) {
 function restartGame(scene) {
     heartsCollected = 0;
     restartButton.setVisible(false);
-    scene.scene.restart();
+    // scene.scene.restart();
+    window.location.href = 'index.html';
 }
