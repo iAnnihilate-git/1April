@@ -1,0 +1,80 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f5a9b8, #b19cd9);
+    margin: 0;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    font-size: 5rem;
+    margin-bottom: 60px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    animation: pulse 2s infinite;
+}
+
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 80%;
+    max-width: 400px;
+}
+
+.btn {
+    padding: 20px;
+    font-size: 1.8rem;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+#love-quest-btn {
+    background: linear-gradient(to right, #ff4e50, #f9d423);
+}
+
+#surprise-btn {
+    background: linear-gradient(to right, #4776e6, #8e54e9);
+}
+
+.hearts {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0;
+    animation: float 6s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}

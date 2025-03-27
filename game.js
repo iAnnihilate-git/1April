@@ -5,13 +5,17 @@ const config = {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        parent: 'game-container', // This tells Phaser to use your div as the container
+        parent: 'game-container',
     },
     physics: {
         default: 'arcade',
         arcade: {
             debug: false
         }
+    },
+    audio: {
+        disableWebAudio: false,
+        noAudio: false
     },
     scene: {
         preload: preload,
@@ -23,29 +27,28 @@ const config = {
 let game = new Phaser.Game(config);
 let player, heartsCollected = 0, heartsText, restartButton, heartGroup;
 let cursors;
-let collectSound, completionSound;
-let soundsLoaded = false;
 
-const PLAYER_SIZE = 100;  // Adjustable player size
-const HEART_SIZE = 80;   // Adjustable heart size
+// Global game variables
+const PLAYER_SIZE = 100;
+const HEART_SIZE = 80;
+const PLAYER_SPEED = 400;
 
 function preload() {
-    // Essential assets
+    // Load essential game assets
     this.load.image('bg', 'assets/bg.jpg');
     this.load.image('player', 'assets/player.png');
     this.load.image('heart', 'assets/heart.png');
     
-    // Try to load sound files, but don't fail if they're missing
-    try {
-        this.load.audio('collect', 'assets/collect.mp3');
-        this.load.audio('completion', 'assets/completion.mp3');
-    } catch (e) {
-        console.warn("Sound files could not be loaded. Game will continue without sound.");
-    }
+    // Load only the collect sound since that's all you have
+    this.load.audio('collect', 'assets/collect.mp3');
+    // Don't try to load the completion sound
+    this.load.audio('completion', 'assets/completion-tada-funny.mp3');
 }
 
 function create() {
-    // Set background to dynamically scale with game window
+    console.log("Game scene created");
+    
+    // Set background
     let bg = this.add.image(0, 0, 'bg').setOrigin(0, 0);
     bg.displayWidth = this.cameras.main.width;
     bg.displayHeight = this.cameras.main.height;
@@ -56,16 +59,10 @@ function create() {
         bg.displayHeight = gameSize.height;
     });
 
-    // Try to create sound effects
-    try {
-        collectSound = this.sound.add('collect');
-        completionSound = this.sound.add('completion');
-        soundsLoaded = true;
-    } catch (e) {
-        console.warn("Sound effects could not be created. Game will continue without sound.");
-        soundsLoaded = false;
-    }
-
+    // Initialize only the collect sound
+    this.collectSound = this.sound.add('collect');
+    this.completionSound = this.sound.add('completion');
+    
     // Create player with physics
     player = this.physics.add.sprite(100, 100, 'player');
     player.setDisplaySize(PLAYER_SIZE, PLAYER_SIZE);
@@ -86,7 +83,7 @@ function create() {
     this.physics.add.overlap(player, heartGroup, collectHeart, null, this);
 
     // Hearts counter
-    heartsText = this.add.text(20, 20, 'Hearts: 0', { fontSize: '42px', fill: '#000000' });
+    heartsText = this.add.text(20, 20, 'Hearts: 0', { fontSize: '42px', fill: '#00000' });
 
     // Restart button (hidden initially)
     restartButton = this.add.text(
@@ -103,24 +100,41 @@ function create() {
 
     // Set up cursor keys for movement
     cursors = this.input.keyboard.createCursorKeys();
+    
+    // Add a debug button to test sound
+    // const soundTestBtn = this.add.text(
+    //     this.cameras.main.width - 150, 
+    //     20, 
+    //     'Test Sound', 
+    //     { fontSize: '16px', fill: '#fff', backgroundColor: '#333' }
+    // )
+    // .setPadding(8)
+    // .setInteractive()
+    // .on('pointerdown', () => {
+    //     console.log("Sound test button clicked");
+    //     if (this.collectSound) {
+    //         console.log("Attempting to play test sound");
+    //         this.collectSound.play();
+    //     } else {
+    //         console.log("Sound object not available");
+    //     }
+    // });
 }
 
 function update() {
-    // Player movement with increased speed
-    const speed = 400; // Increased from 200 to 300 for faster movement
-    
+    // Player movement
     if (cursors.left.isDown) {
-        player.setVelocityX(-speed);
+        player.setVelocityX(-PLAYER_SPEED);
     } else if (cursors.right.isDown) {
-        player.setVelocityX(speed);
+        player.setVelocityX(PLAYER_SPEED);
     } else {
         player.setVelocityX(0);
     }
 
     if (cursors.up.isDown) {
-        player.setVelocityY(-speed);
+        player.setVelocityY(-PLAYER_SPEED);
     } else if (cursors.down.isDown) {
-        player.setVelocityY(speed);
+        player.setVelocityY(PLAYER_SPEED);
     } else {
         player.setVelocityY(0);
     }
@@ -131,13 +145,17 @@ function collectHeart(player, heart) {
     heartsCollected++;
     heartsText.setText('Hearts: ' + heartsCollected);
     
-    // Play collection sound if available
-    if (soundsLoaded && collectSound) {
-        try {
-            collectSound.play();
-        } catch (e) {
-            console.warn("Could not play collect sound");
-        }
+    // Check if hearts collected is 14
+    if (heartsCollected === 14) {
+        heartsText.setText('Heart: 14th January 2025');
+    } else {
+        heartsText.setText('Hearts: ' + heartsCollected);
+    }
+
+    // Play collect sound
+    if (this.collectSound) {
+        // console.log("Playing collect sound");
+        this.collectSound.play();
     }
 
     if (heartsCollected >= 14) {
@@ -146,13 +164,10 @@ function collectHeart(player, heart) {
 }
 
 function showFinalMessage(scene) {
-    // Play completion sound if available
-    if (soundsLoaded && completionSound) {
-        try {
-            completionSound.play();
-        } catch (e) {
-            console.warn("Could not play completion sound");
-        }
+    // We don't have a completion sound, so we'll just play the collect sound again
+    if (scene.completionSound) {
+        console.log("Playing sound for completion");
+        scene.completionSound.play();
     }
     
     // Darken background
@@ -167,8 +182,8 @@ function showFinalMessage(scene) {
     const message = scene.add.text(
         scene.cameras.main.width / 2, 
         scene.cameras.main.height / 2 - 50, 
-        'Happy Birthday, My Love ❤️!', 
-        { fontSize: '32px', fill: '#fff' }
+        'Happy Birthday, Pilluuu ❤️!', 
+        { fontSize: '62px', fill: '#fff' }
     ).setOrigin(0.5);
 
     // Add some animation to the message
