@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Redirect to a thank you page or show a message
         setTimeout(() => {
-            alert('Its settled then! HEAD IT IS❤️');
+            alert('Its settled then! HEAD IT IS!!😈');
             // You can redirect to your game or another page
             window.location.href = 'index.html';
         }, 1500);
