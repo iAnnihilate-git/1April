@@ -36,7 +36,7 @@ const PLAYER_SPEED = 700;
 function preload() {
     // Load essential game assets
     this.load.image('bg', 'assets/bg.jpg');
-    this.load.image('player', 'assets/player.png');
+    this.load.image('player', 'assets/player-1.png');
     this.load.image('heart', 'assets/heart.png');
 
     // Load cake image for the restart button
