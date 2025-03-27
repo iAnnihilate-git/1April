@@ -65,11 +65,31 @@ h1 {
 }
 
 #love-quest-btn {
-    background: linear-gradient(to right, #ff4e50, #f9d423);
+    /* background: linear-gradient(to right, #ff4e50, #f9d423); */
+    background: hsla(341, 94%, 49%, 1);
+
+    background: linear-gradient(90deg, hsla(341, 94%, 49%, 1) 0%, hsla(16, 90%, 77%, 1) 100%);
+
+    background: -moz-linear-gradient(90deg, hsla(341, 94%, 49%, 1) 0%, hsla(16, 90%, 77%, 1) 100%);
+
+    background: -webkit-linear-gradient(90deg, hsla(341, 94%, 49%, 1) 0%, hsla(16, 90%, 77%, 1) 100%);
+
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#F40752", endColorstr="#F9AB8F", GradientType=1 );
 }
 
 #surprise-btn {
-    background: linear-gradient(to right, #4776e6, #8e54e9);
+    /* background: linear-gradient(to right, #4776e6, #8e54e9); */
+    background: hsla(136, 48%, 54%, 1);
+
+    background: linear-gradient(90deg, hsla(136, 48%, 54%, 1) 0%, hsla(58, 99%, 48%, 1) 100%);
+
+    background: -moz-linear-gradient(90deg, hsla(136, 48%, 54%, 1) 0%, hsla(58, 99%, 48%, 1) 100%);
+
+    background: -webkit-linear-gradient(90deg, hsla(136, 48%, 54%, 1) 0%, hsla(58, 99%, 48%, 1) 100%);
+
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#51C26F", endColorstr="#F2E901", GradientType=1 );
+
+    color: black;
 }
 
 .hearts {
