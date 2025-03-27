@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const yesBtn = document.getElementById('yes-btn');
     const container = document.querySelector('.buttons-container');
     
+    // Create audio element for the yes button click
+    const yesSound = new Audio('assets/gawk-gawk-gawk.mp3');
+    
     // Function to get a random position within the container
     function getRandomPosition() {
         const containerRect = container.getBoundingClientRect();
@@ -38,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mouseY = e.clientY;
         
         // Increased detection area from 100px to 200px
-        const detectionRadius = 250;
+        const detectionRadius = 50;
         
         // Calculate distance between mouse and button edges
         const closeToLeft = Math.abs(mouseX - btnRect.left) < detectionRadius;
@@ -65,6 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Create hearts animation when Yes is clicked
     yesBtn.addEventListener('click', () => {
+        // Play the sound
+        yesSound.play()
+            .catch(error => {
+                console.log("Error playing sound:", error);
+                // Continue with the rest of the function even if sound fails
+            });
+        
         // Create celebration effect
         for (let i = 0; i < 20; i++) {
             createHeart();
