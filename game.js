@@ -31,17 +31,19 @@ let cursors;
 // Global game variables
 const PLAYER_SIZE = 100;
 const HEART_SIZE = 80;
-const PLAYER_SPEED = 400;
+const PLAYER_SPEED = 700;
 
 function preload() {
     // Load essential game assets
     this.load.image('bg', 'assets/bg.jpg');
     this.load.image('player', 'assets/player.png');
     this.load.image('heart', 'assets/heart.png');
+
+    // Load cake image for the restart button
+    this.load.image('cake', 'assets/cake.png');
     
-    // Load only the collect sound since that's all you have
+    // Load sound files
     this.load.audio('collect', 'assets/collect-2.mp3');
-    // Don't try to load the completion sound
     this.load.audio('completion', 'assets/completion-tada-funny.mp3');
 }
 
@@ -83,17 +85,19 @@ function create() {
     this.physics.add.overlap(player, heartGroup, collectHeart, null, this);
 
     // Hearts counter
-    heartsText = this.add.text(20, 20, 'Hearts: 0', { fontSize: '42px', fill: '#00000' });
+    heartsText = this.add.text(20, 20, 'Hearts: 0', { 
+        fontFamily: 'Acme, sans-serif',
+        fontSize: '42px', 
+        fill: '#00000' 
+    });
 
-    // Restart button (hidden initially)
-    restartButton = this.add.text(
+    // Create cake image (hidden initially)
+    cakeImage = this.add.image(
         this.cameras.main.width / 2, 
-        this.cameras.main.height / 2 + 50, 
-        'Restart', 
-        { fontSize: '24px', fill: '#fff', backgroundColor: '#ff0000' }
+        this.cameras.main.height / 2 + 100, 
+        'cake'
     )
-    .setPadding(10)
-    .setOrigin(0.5)
+    .setScale(0.15) // Adjust scale as needed for your cake image
     .setInteractive()
     .setVisible(false)
     .on('pointerdown', () => restartGame(this));
@@ -178,7 +182,18 @@ function showFinalMessage(scene) {
         0x000000, 0.7
     ).setOrigin(0);
 
-    // Birthday message
+    // Show cake image behind the text
+    cakeImage.setVisible(true);
+    
+    // Add animation to the cake
+    scene.tweens.add({
+        targets: cakeImage,
+        scale: { from: 0.1, to: 0.15 },
+        duration: 1000,
+        ease: 'Bounce'
+    });
+
+    // Birthday message with Acme font
     const message = scene.add.text(
         scene.cameras.main.width / 2, 
         scene.cameras.main.height / 2 - 50, 
@@ -198,12 +213,22 @@ function showFinalMessage(scene) {
         ease: 'Bounce'
     });
 
-    restartButton.setVisible(true);
+    // Add text to indicate the cake is clickable
+    const clickText = scene.add.text(
+        scene.cameras.main.width / 2, 
+        scene.cameras.main.height / 2 + 150, 
+        'Click the cake to play again!', 
+        { 
+            fontFamily: 'Acme, sans-serif',
+            fontSize: '18px', 
+            fill: '#fff' 
+        }
+    ).setOrigin(0.5);
 }
 
 function restartGame(scene) {
     heartsCollected = 0;
-    restartButton.setVisible(false);
+    cakeImage.setVisible(false);
     // scene.scene.restart();
     window.location.href = 'index.html';
 }
