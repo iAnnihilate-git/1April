@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.querySelector('.buttons-container');
     
     // Create audio element for the yes button click
-    const yesSound = new Audio('assets/gawk-gawk-gawkk.mp3');
+    const yesSound = new Audio('assets/date2.mp3');
     
     // Flag to track if 10 seconds have passed
     let canClickNo = false;
