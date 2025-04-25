@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const mouseY = e.clientY;
             
             // No button detection area
-            const detectionRadius = 50;
+            const detectionRadius = 25;
             
             // Calculate distance between mouse and button edges
             const closeToLeft = Math.abs(mouseX - btnRect.left) < detectionRadius;
