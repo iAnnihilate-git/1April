@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add a little animation before redirecting
         surpriseBtn.style.transform = 'scale(1.1)';
         setTimeout(() => {
-            window.location.href = 'head.html';
+            window.location.href = 'date.html';
         }, 300);
     });
     
@@ -31,12 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Continue creating hearts periodically
-        setInterval(createHeart, 2000);
+        setInterval(createHeart, 200);
     }
     
     function createHeart() {
         const heart = document.createElement('div');
-        heart.innerHTML = ['❤️', '💕', '💖', '💘', '💓'][Math.floor(Math.random() * 5)];
+        heart.innerHTML = ['❤️', '💕', '💖', '💘', '💓', '💗', '💝'][Math.floor(Math.random() * 7)];
         heart.classList.add('hearts');
         
         // Random position at the bottom of the screen
